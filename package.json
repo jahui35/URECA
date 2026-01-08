@@ -21,5 +21,8 @@
   "dependencies": {
     "formidable": "^3.5.4",
     "openai": "^6.15.0"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }
