@@ -6,6 +6,36 @@
   <title>Artwork Description Generator</title>
 
   <style>
+    /* Loading indicator */
+    #result.loading::after {
+      content: " ⏳";
+    }
+
+    /* Button hover effect */
+    button {
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #357ABD;
+    }
+
+    /* Error message styling */
+    #error-message {
+      color: #D32F2F;
+      font-size: 0.9em;
+    }
+
+    /* Responsive padding on mobile */
+    @media (max-width: 600px) {
+      body {
+        padding: 15px;
+        margin: 20px auto;
+      }
+    }
     body {
       font-family: Arial, sans-serif;
       max-width: 600px;
@@ -71,21 +101,65 @@
       }
     });
 
-    function handleSubmit() {
+    async function handleSubmit() {
       const shortDesc = document.getElementById('shortDesc').value.trim();
+      const imageInput = document.getElementById('imageUpload');
       const errorMsg = document.getElementById('error-message');
       const resultBox = document.getElementById('result');
 
+      // Reset UI
+      errorMsg.style.display = 'none';
+      resultBox.style.display = 'block';
+      resultBox.className = 'loading'; // Add loading indicator
+      resultBox.innerText = "Analyzing your artwork...";
+
+      // Validate
       if (!shortDesc) {
         errorMsg.innerText = "Please enter a brief description.";
         errorMsg.style.display = 'block';
         resultBox.style.display = 'none';
         return;
       }
-      
-      errorMsg.style.display = 'none';
-      resultBox.innerText = "Description generator in the works!!";
-      resultBox.style.display = 'block';
+      if (!imageInput.files[0]) {
+        errorMsg.innerText = "Please upload an image of your artwork.";
+        errorMsg.style.display = 'block';
+        resultBox.style.display = 'none';
+        return;
+      }
+
+      const file = imageInput.files[0];
+      if (file.size > 4 * 1024 * 1024) {
+        errorMsg.innerText = "Image too large! Please use under 4MB.";
+        errorMsg.style.display = 'block';
+        resultBox.style.display = 'none';
+        return;
+      }
+
+      // Prepare form data
+      const formData = new FormData();
+      formData.append('imageUpload', file);
+      formData.append('shortDesc', shortDesc);
+
+      try {
+        const response = await fetch('/api/describe', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+        resultBox.className = ''; // Remove loading
+        if (data.error) {
+          resultBox.innerText = "Error: " + data.error;
+          resultBox.style.backgroundColor = "#FFEBEE";
+        } else {
+          resultBox.innerText = data.description;
+          resultBox.style.backgroundColor = "#FFF4D1";
+        }
+      } catch (error) {
+        resultBox.className = '';
+        resultBox.innerText = "Network error. Please try again.";
+        resultBox.style.backgroundColor = "#FFEBEE";
+      }
     }
   </script>
 </body>

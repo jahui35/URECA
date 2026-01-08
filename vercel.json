@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/describe.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
