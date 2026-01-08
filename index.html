@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artwork Description Generator</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    input, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: none;
+      width: 100%;
+      height: 120px;
+      margin: 10px 0;           /* Changed from 'auto' → '0' for consistency */
+      padding: 12px;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    img#preview {
+      max-width: 100%;
+      margin-top: 15px;
+      display: none;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #FFF4D1;
+      border-radius: 5px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Artwork Description Generator</h1>
+  
+  <input type="file" id="imageUpload" accept="image/*" />
+  <img id="preview" alt="Artwork preview" />
+
+  <textarea id="shortDesc" placeholder="Please enter a brief description of your artwork here"></textarea>
+
+  <div id="error-message" style="color: red; margin-top: 5px; display: none;"></div>
+
+  <button onclick="handleSubmit()">Generate a Polished Description</button>
+
+  <div id="result"></div>
+
+  <script>
+    // Preview uploaded image
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('preview');
+          img.src = e.target.result;
+          img.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function handleSubmit() {
+      const shortDesc = document.getElementById('shortDesc').value.trim();
+      const errorMsg = document.getElementById('error-message');
+      const resultBox = document.getElementById('result');
+
+      if (!shortDesc) {
+        errorMsg.innerText = "Please enter a brief description.";
+        errorMsg.style.display = 'block';
+        resultBox.style.display = 'none';
+        return;
+      }
+      
+      errorMsg.style.display = 'none';
+      resultBox.innerText = "Description generator in the works!!";
+      resultBox.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
