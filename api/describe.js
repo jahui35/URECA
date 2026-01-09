@@ -42,6 +42,26 @@ export default async function handler(req, res) {
       ? files.imageUpload[0]
       : files.imageUpload;
 
+    const wordCount = Array.isArray(fields.wordCount)
+      ? fields.wordCount[0]
+      : fields.wordCount || '100';
+
+    const style = Array.isArray(fields.style)
+      ? fields.style[0]
+      : fields.style || 'professional';
+
+    // Map style to tone guidance
+    const styleInstructions = {
+      professional: "a professional art curator writing for a gallery exhibition",
+      technical: "a technical analyst focusing on materials, brushwork, composition, and artistic process",
+      poetic: "a poet describing the emotional and sensory experience evoked by the artwork",
+      philosophical: "a philosopher exploring the conceptual, existential, or symbolic meaning of the piece",
+      scientific: "a scientist analyzing visual patterns, color theory, symmetry, and perceptual effects",
+      abstract: "an avant-garde critic using experimental and non-literal language to interpret the work"
+    };
+
+    const toneInstruction = styleInstructions[style] || styleInstructions.professional;
+
     // Validate inputs
     if (!shortDesc || !shortDesc.trim()) {
       return res.status(400).json({ error: 'Brief description is required' });
@@ -63,6 +83,8 @@ export default async function handler(req, res) {
       
       // Create proper data URL
       const dataUrl = `data:${mimeType};base64,${base64Image}`;
+      // length of description
+      //const desclength = 
 
       // Initialize OpenAI client
       const openai = new OpenAI({ 
@@ -78,7 +100,7 @@ export default async function handler(req, res) {
             content: [
               { 
                 type: 'text', 
-                text: `You are an art curator writing professional artwork descriptions. Based on the image and this brief description: "${shortDesc}", create a polished, detailed, and professional artwork description. Focus on the visual elements, technique, color palette, composition, and emotional impact. Keep it concise but evocative (2-3 paragraphs).` 
+                text: `You are ${toneInstruction}. Based on the image and this brief context: "${shortDesc}", write a polished, engaging, and insightful artwork description. Keep it approximately ${wordCount} words long. Focus on visual elements, meaning, technique (if relevant), and impact. Avoid markdown and do not mention word count in the response.`
               },
               { 
                 type: 'image_url', 
