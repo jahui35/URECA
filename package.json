@@ -1,24 +1,34 @@
 {
   "name": "ureca",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
+  "description": "AI-powered artwork description generator using GPT-4 Vision",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jahui35/URECA.git"
   },
-  "keywords": [],
+  "keywords": [
+    "ai",
+    "artwork",
+    "description",
+    "gpt-4",
+    "vision"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/jahui35/URECA/issues"
   },
   "homepage": "https://github.com/jahui35/URECA#readme",
   "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
     "formidable": "^3.5.4",
     "openai": "^6.15.0"
   },

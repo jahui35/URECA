@@ -3,137 +3,568 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Artwork Description Generator</title>
-
+  <title>Artwork Description AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+  
   <style>
-    /* Loading indicator */
-    #result.loading::after {
-      content: " ⏳";
+    :root {
+      --primary: #1a73e8;
+      --primary-hover: #1557b0;
+      --secondary: #5f6368;
+      --surface: #ffffff;
+      --surface-variant: #f8f9fa;
+      --error: #d93025;
+      --success: #1e8e3e;
+      --border: #e8eaed;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+      --radius: 12px;
+      --radius-lg: 24px;
     }
 
-    /* Button hover effect */
-    button {
-      background-color: #4A90E2;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background-color: #357ABD;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* Error message styling */
-    #error-message {
-      color: #D32F2F;
-      font-size: 0.9em;
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 24px;
+      color: var(--text-primary);
+      line-height: 1.6;
     }
 
-    /* Responsive padding on mobile */
-    @media (max-width: 600px) {
-      body {
-        padding: 15px;
-        margin: 20px auto;
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
     }
-    input, button {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      box-sizing: border-box;
+
+    .header h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.2);
     }
-    textarea {
-      resize: none;
-      width: 100%;
-      height: 120px;
-      margin: 10px 0;           /* Changed from 'auto' → '0' for consistency */
-      padding: 12px;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
+
+    .header p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 400;
     }
-    img#preview {
+
+    .card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255,255,255,0.5);
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+    }
+
+    .server-status {
+      padding: 12px 16px;
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .server-status.connected {
+      background: #d4edda;
+      border-color: #28a745;
+      color: #155724;
+    }
+
+    .server-status.error {
+      background: #f8d7da;
+      border-color: #dc3545;
+      color: #721c24;
+    }
+
+    .upload-zone {
+      position: relative;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 48px 24px;
+      text-align: center;
+      background: var(--surface-variant);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .upload-zone:hover {
+      border-color: var(--primary);
+      background: #f0f4ff;
+    }
+
+    .upload-zone.has-image {
+      padding: 0;
+      border: none;
+      background: transparent;
+    }
+
+    .upload-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      opacity: 0.4;
+    }
+
+    .upload-label {
+      display: block;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .upload-hint {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    #imageUpload {
+      display: none;
+    }
+
+    #preview {
       max-width: 100%;
-      margin-top: 15px;
+      max-height: 400px;
+      border-radius: var(--radius);
       display: none;
+      object-fit: cover;
+      animation: fadeIn 0.4s ease;
     }
-    #result {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #FFF4D1;
-      border-radius: 5px;
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    #preview.visible {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text-primary);
+      resize: vertical;
+      transition: all 0.2s ease;
+      background: var(--surface);
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
+    }
+
+    textarea::placeholder {
+      color: #9aa0a6;
+    }
+
+    .error-message {
       display: none;
+      padding: 12px 16px;
+      background: #fce8e6;
+      color: var(--error);
+      border-radius: var(--radius);
+      font-size: 14px;
+      margin-bottom: 16px;
+      border-left: 4px solid var(--error);
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    .error-message.visible {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-hover);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary.loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      to { left: 100%; }
+    }
+
+    .result-card {
+      display: none;
+      margin-top: 24px;
+      padding: 24px;
+      background: var(--surface-variant);
+      border-radius: var(--radius);
+      border-left: 4px solid var(--success);
+      animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-card.visible {
+      display: block;
+    }
+
+    .result-card.error {
+      background: #fce8e6;
+      border-left-color: var(--error);
+    }
+
+    .result-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .result-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      body {
+        padding: 16px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .header h1 {
+        font-size: 32px;
+      }
+
+      .upload-zone {
+        padding: 32px 16px;
+      }
+    }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Selection color */
+    ::selection {
+      background: rgba(26, 115, 232, 0.2);
+      color: var(--text-primary);
     }
   </style>
 </head>
 
 <body>
-  <h1>Artwork Description Generator</h1>
-  
-  <input type="file" id="imageUpload" accept="image/*" />
-  <img id="preview" alt="Artwork preview" />
+  <div class="container">
+    <div class="header">
+      <h1>✨ Artwork Description AI</h1>
+      <p>Transform your artwork into compelling descriptions with AI</p>
+    </div>
 
-  <textarea id="shortDesc" placeholder="Please enter a brief description of your artwork here"></textarea>
+    <div class="card">
+      <div class="server-status" id="serverStatus">
+        ⚠️ Checking backend connection...
+      </div>
 
-  <div id="error-message" style="color: red; margin-top: 5px; display: none;"></div>
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imageUpload').click()">
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+        </svg>
+        <span class="upload-label">Click to upload artwork</span>
+        <span class="upload-hint">PNG, JPG up to 4MB</span>
+        <img id="preview" alt="Artwork preview" />
+      </div>
+      <input type="file" id="imageUpload" accept="image/*" />
 
-  <button onclick="handleSubmit()">Generate a Polished Description</button>
+      <div class="form-group">
+        <label for="shortDesc">Brief Description</label>
+        <textarea 
+          id="shortDesc" 
+          placeholder="Describe your artwork briefly... (e.g., 'Abstract painting with blue and gold tones representing ocean waves at sunset')"
+        ></textarea>
+      </div>
 
-  <div id="result"></div>
+      <div class="error-message" id="errorMessage">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="errorText"></span>
+      </div>
+
+      <button class="btn-primary" id="submitBtn" onclick="handleSubmit()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        Generate Description
+      </button>
+
+      <div class="result-card" id="resultCard">
+        <div class="result-label">Generated Description</div>
+        <div class="result-text" id="resultText"></div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // Preview uploaded image
-    document.getElementById('imageUpload').addEventListener('change', function(e) {
+    // API endpoint configuration
+    // Change this to match where your backend server is running
+    const API_URL = 'http://localhost:3000/api/describe';
+
+    const imageUpload = document.getElementById('imageUpload');
+    const preview = document.getElementById('preview');
+    const uploadZone = document.getElementById('uploadZone');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+    const resultCard = document.getElementById('resultCard');
+    const resultText = document.getElementById('resultText');
+    const submitBtn = document.getElementById('submitBtn');
+    const serverStatus = document.getElementById('serverStatus');
+
+    // Check backend connection on load
+    async function checkBackend() {
+      try {
+        const response = await fetch(API_URL.replace('/api/describe', '/'), {
+          method: 'GET',
+          mode: 'cors'
+        });
+        
+        serverStatus.className = 'server-status connected';
+        serverStatus.innerHTML = '✓ Backend connected';
+      } catch (error) {
+        serverStatus.className = 'server-status error';
+        serverStatus.innerHTML = '✗ Backend not running. Please start server.js on port 3000';
+      }
+    }
+
+    checkBackend();
+
+    // Image preview
+    imageUpload.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          const img = document.getElementById('preview');
-          img.src = e.target.result;
-          img.style.display = 'block';
+          preview.src = e.target.result;
+          preview.classList.add('visible');
+          uploadZone.classList.add('has-image');
+          hideError();
         };
         reader.readAsDataURL(file);
       }
     });
 
+    // Drag and drop
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.style.borderColor = 'var(--primary)';
+      uploadZone.style.background = '#f0f4ff';
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+      uploadZone.style.borderColor = 'var(--border)';
+      uploadZone.style.background = 'var(--surface-variant)';
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.style.borderColor = 'var(--border)';
+      uploadZone.style.background = 'var(--surface-variant)';
+      
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        imageUpload.files = e.dataTransfer.files;
+        const event = new Event('change');
+        imageUpload.dispatchEvent(event);
+      }
+    });
+
+    function showError(message) {
+      errorText.textContent = message;
+      errorMessage.classList.add('visible');
+      resultCard.classList.remove('visible');
+    }
+
+    function hideError() {
+      errorMessage.classList.remove('visible');
+    }
+
+    function showLoading() {
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+      submitBtn.innerHTML = `
+        <span class="spinner"></span>
+        Analyzing artwork...
+      `;
+    }
+
+    function hideLoading() {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove('loading');
+      submitBtn.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+        Generate Description
+      `;
+    }
+
     async function handleSubmit() {
       const shortDesc = document.getElementById('shortDesc').value.trim();
-      const imageInput = document.getElementById('imageUpload');
-      const errorMsg = document.getElementById('error-message');
-      const resultBox = document.getElementById('result');
+      const file = imageUpload.files[0];
 
-      // Reset UI
-      errorMsg.style.display = 'none';
-      resultBox.style.display = 'block';
-      resultBox.className = 'loading'; // Add loading indicator
-      resultBox.innerText = "Analyzing your artwork...";
+      hideError();
+      resultCard.classList.remove('visible');
 
-      // Validate
+      // Validation
       if (!shortDesc) {
-        errorMsg.innerText = "Please enter a brief description.";
-        errorMsg.style.display = 'block';
-        resultBox.style.display = 'none';
-        return;
-      }
-      if (!imageInput.files[0]) {
-        errorMsg.innerText = "Please upload an image of your artwork.";
-        errorMsg.style.display = 'block';
-        resultBox.style.display = 'none';
+        showError('Please enter a brief description of your artwork.');
         return;
       }
 
-      const file = imageInput.files[0];
-      if (file.size > 4 * 1024 * 1024) {
-        errorMsg.innerText = "Image too large! Please use under 4MB.";
-        errorMsg.style.display = 'block';
-        resultBox.style.display = 'none';
+      if (!file) {
+        showError('Please upload an image of your artwork.');
         return;
       }
+
+      if (file.size > 4 * 1024 * 1024) {
+        showError('Image size must be under 4MB. Please compress your image and try again.');
+        return;
+      }
+
+      showLoading();
 
       // Prepare form data
       const formData = new FormData();
@@ -141,24 +572,38 @@
       formData.append('shortDesc', shortDesc);
 
       try {
-        const response = await fetch('/api/describe', {
+        console.log('Sending request to:', API_URL);
+        
+        const response = await fetch(API_URL, {
           method: 'POST',
-          body: formData
+          body: formData,
+          mode: 'cors'
         });
 
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
         const data = await response.json();
-        resultBox.className = ''; // Remove loading
+        
+        hideLoading();
+
         if (data.error) {
-          resultBox.innerText = "Error: " + data.error;
-          resultBox.style.backgroundColor = "#FFEBEE";
+          resultCard.classList.add('error');
+          resultCard.classList.add('visible');
+          resultText.textContent = data.error;
         } else {
-          resultBox.innerText = data.description;
-          resultBox.style.backgroundColor = "#FFF4D1";
+          resultCard.classList.remove('error');
+          resultCard.classList.add('visible');
+          resultText.textContent = data.description;
+          resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
       } catch (error) {
-        resultBox.className = '';
-        resultBox.innerText = "Network error. Please try again.";
-        resultBox.style.backgroundColor = "#FFEBEE";
+        console.error('Fetch error:', error);
+        hideLoading();
+        showError(`Cannot connect to backend server. Make sure server.js is running on port 3000. Error: ${error.message}`);
       }
     }
   </script>
