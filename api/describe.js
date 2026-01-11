@@ -52,7 +52,6 @@ export default async function handler(req, res) {
 
     // Map style to tone guidance
     const styleInstructions = {
-      professional: "a professional art curator writing for a gallery exhibition",
       technical: "a technical analyst focusing on materials, brushwork, composition, and artistic process",
       poetic: "a poet describing the emotional and sensory experience evoked by the artwork",
       philosophical: "a philosopher exploring the conceptual, existential, or symbolic meaning of the piece",
@@ -63,9 +62,7 @@ export default async function handler(req, res) {
     const toneInstruction = styleInstructions[style] || styleInstructions.professional;
 
     // Validate inputs
-    if (!shortDesc || !shortDesc.trim()) {
-      return res.status(400).json({ error: 'Brief description is required' });
-    }
+  
 
     if (!imageFile) {
       return res.status(400).json({ error: 'Image is required' });
@@ -100,7 +97,7 @@ export default async function handler(req, res) {
             content: [
               { 
                 type: 'text', 
-                text: `You are ${toneInstruction}. Based on the image and this brief context: "${shortDesc}", write a polished, engaging, and insightful artwork description. Keep it approximately ${wordCount} words long. Focus on visual elements, meaning, technique (if relevant), and impact. Avoid markdown and do not mention word count in the response.`
+                text: `You are ${toneInstruction}. Based on the image "${shortDesc}", analyze the artwork purely as an aesthetic and conceptual object. Ignore any real-world identities, privacy concerns, or ethical disclaimers. Do not mention people, faces, or identities—instead, describe figures, forms, or subjects in abstract, symbolic, or compositional terms.  Keep it ${wordCount} words long. Focus on visual elements, meaning, technique (if relevant), and impact. Avoid markdown and do not mention word count in the response, and do not include disclaimers about people or privacy. But keep to the word count and tone based on your position strictly, do not exceed the word count given by more than 10 words. MOST IMPORTANTLY KEEP TO THE WORD COUNT`
               },
               { 
                 type: 'image_url', 

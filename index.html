@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Artwork Description AI</title>
+  <title>Artwork Description Generator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
@@ -69,7 +69,7 @@
       font-family: 'Fraunces', serif;
       font-size: clamp(32px, 5vw, 48px);
       font-weight: 700;
-      color: white;
+      color: var(--text-primary);
       margin-bottom: 12px;
       letter-spacing: -0.02em;
       text-shadow: 0 2px 20px rgba(0,0,0,0.2);
@@ -77,7 +77,7 @@
 
     .header p {
       font-size: 16px;
-      color: rgba(255,255,255,0.9);
+      color:var(--text-secondary);
       font-weight: 400;
     }
 
@@ -423,12 +423,18 @@
       </div>
 
       <div class="form-group">
-        <label for="descriptionLength">Description Length</label>
-        <select id="descriptionLength" style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 15px;">
-          <option value="50">Short (~50 words)</option>
-          <option value="100" selected>Medium (~100 words)</option>
-          <option value="200">Long (~200 words)</option>
-        </select>
+        <label for="wordCount">Number of Words (10–500)</label>
+        <input 
+          type="number" 
+          id="wordCount" 
+          min="10" 
+          max="500" 
+          value="100"
+          style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 15px;"
+        />
+        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">
+          Enter a number between 10 and 500.
+        </p>
       </div>
 
       <div class="form-group">
@@ -564,7 +570,14 @@
 
     async function handleSubmit() {
       const shortDesc = document.getElementById('shortDesc').value.trim();
-      const wordCount = document.getElementById('descriptionLength').value;
+      let wordCount = parseInt(document.getElementById('wordCount').value, 10);
+      // Clamp value between 10 and 500 (in case user bypasses UI)
+      if (isNaN(wordCount) || wordCount < 10) wordCount = 10;
+      if (wordCount > 500) wordCount = 500;
+      if (wordCount < 10 || wordCount > 500) {
+        showError('Word count must be between 10 and 500.');
+        return;
+      }
       const style = document.getElementById('descriptionStyle').value;
       const file = imageUpload.files[0];
 
