@@ -13,8 +13,8 @@
       --primary: #1a73e8;
       --primary-hover: #1557b0;
       --secondary: #5f6368;
-      --surface: #ffffff;
-      --surface-variant: #f8f9fa;
+      --surface: #f9f6f0;
+      --surface-variant: #f4f0e6;
       --error: #d93025;
       --success: #1e8e3e;
       --border: #e8eaed;
@@ -35,7 +35,7 @@
 
     body {
       font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+      background: linear-gradient(135deg, #f9f6f0 0%, #f9f6f0 100%);
       min-height: 100vh;
       padding: 24px;
       color: var(--text-primary);
@@ -77,12 +77,12 @@
 
     .header p {
       font-size: 16px;
-      color:var(--text-secondary);
+      color: var(--text-secondary);
       font-weight: 400;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.98);
+      background: rgba(249, 246, 240, 0.95);
       backdrop-filter: blur(20px);
       border-radius: var(--radius-lg);
       padding: 32px;
@@ -207,12 +207,28 @@
       background: var(--surface);
     }
 
+    input[type="text"],
+    input[type="date"] {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      background: var(--surface);
+      margin-top: 8px;
+    }
+
+    input:focus,
     textarea:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
     }
 
+    input::placeholder,
     textarea::placeholder {
       color: #9aa0a6;
     }
@@ -413,6 +429,49 @@
         ></textarea>
       </div>
 
+      <div class="form-group">
+        <label for="artistName">Artist Name</label>
+        <input 
+          type="text" 
+          id="artistName" 
+          placeholder="Enter the artist's name (optional)"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="medium">Medium Used</label>
+        <input 
+          type="text" 
+          id="medium" 
+          placeholder="e.g., Oil on canvas, Watercolor, Digital, etc. (optional)"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="dateFinished">Date Finished</label>
+        <input 
+          type="text" 
+          id="dateFinished" 
+          placeholder="e.g., 2023, Spring 2023, etc. (optional)"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="context">Context</label>
+        <textarea 
+          id="context" 
+          placeholder="Describe the context or circumstances surrounding the creation of the artwork (optional)"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="inspiration">History or Inspiration</label>
+        <textarea 
+          id="inspiration" 
+          placeholder="Describe the history or inspiration behind the artwork (optional)"
+        ></textarea>
+      </div>
+
       <div class="error-message" id="errorMessage">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
@@ -420,21 +479,6 @@
           <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
         <span id="errorText"></span>
-      </div>
-
-      <div class="form-group">
-        <label for="wordCount">Number of Words (10–500)</label>
-        <input 
-          type="number" 
-          id="wordCount" 
-          min="10" 
-          max="500" 
-          value="100"
-          style="width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 15px;"
-        />
-        <p style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">
-          Enter a number between 10 and 500.
-        </p>
       </div>
 
       <div class="form-group">
@@ -570,14 +614,11 @@
 
     async function handleSubmit() {
       const shortDesc = document.getElementById('shortDesc').value.trim();
-      let wordCount = parseInt(document.getElementById('wordCount').value, 10);
-      // Clamp value between 10 and 500 (in case user bypasses UI)
-      if (isNaN(wordCount) || wordCount < 10) wordCount = 10;
-      if (wordCount > 500) wordCount = 500;
-      if (wordCount < 10 || wordCount > 500) {
-        showError('Word count must be between 10 and 500.');
-        return;
-      }
+      const artistName = document.getElementById('artistName').value.trim();
+      const medium = document.getElementById('medium').value.trim();
+      const dateFinished = document.getElementById('dateFinished').value.trim();
+      const context = document.getElementById('context').value.trim();
+      const inspiration = document.getElementById('inspiration').value.trim();
       const style = document.getElementById('descriptionStyle').value;
       const file = imageUpload.files[0];
 
@@ -606,8 +647,12 @@
       const formData = new FormData();
       formData.append('imageUpload', file);
       formData.append('shortDesc', shortDesc);
-      formData.append('wordCount', wordCount);
-      formData.append('style', style); // ← new
+      formData.append('artistName', artistName);
+      formData.append('medium', medium);
+      formData.append('dateFinished', dateFinished);
+      formData.append('context', context);
+      formData.append('inspiration', inspiration);
+      formData.append('style', style);
 
       try {
         console.log('Sending request to:', API_URL);

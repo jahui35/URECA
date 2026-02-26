@@ -49,6 +49,30 @@ app.post('/api/describe', (req, res) => {
       ? fields.shortDesc[0] 
       : fields.shortDesc || '';
     
+    const artistName = Array.isArray(fields.artistName)
+      ? fields.artistName[0]
+      : fields.artistName || '';
+    
+    const medium = Array.isArray(fields.medium)
+      ? fields.medium[0]
+      : fields.medium || '';
+    
+    const dateFinished = Array.isArray(fields.dateFinished)
+      ? fields.dateFinished[0]
+      : fields.dateFinished || '';
+    
+    const context = Array.isArray(fields.context)
+      ? fields.context[0]
+      : fields.context || '';
+    
+    const inspiration = Array.isArray(fields.inspiration)
+      ? fields.inspiration[0]
+      : fields.inspiration || '';
+    
+    const style = Array.isArray(fields.style)
+      ? fields.style[0]
+      : fields.style || 'professional';
+
     const imageFile = Array.isArray(files.imageUpload)
       ? files.imageUpload[0]
       : files.imageUpload;
@@ -82,12 +106,53 @@ app.post('/api/describe', (req, res) => {
 
       console.log('Processing request...');
       console.log('Description:', shortDesc);
+      console.log('Artist:', artistName);
+      console.log('Medium:', medium);
+      console.log('Date:', dateFinished);
+      console.log('Context:', context);
+      console.log('Inspiration:', inspiration);
+      console.log('Style:', style);
       console.log('Image size:', imageFile.size, 'bytes');
 
       // Initialize OpenAI
       const openai = new OpenAI({ 
         apiKey: process.env.OPENAI_API_KEY 
       });
+
+      // Build additional context string
+      let additionalContext = '';
+      
+      if (artistName.trim()) {
+        additionalContext += `Artist: ${artistName.trim()}\n`;
+      }
+      
+      if (medium.trim()) {
+        additionalContext += `Medium: ${medium.trim()}\n`;
+      }
+      
+      if (dateFinished.trim()) {
+        additionalContext += `Date Finished: ${dateFinished.trim()}\n`;
+      }
+      
+      if (context.trim()) {
+        additionalContext += `Context: ${context.trim()}\n`;
+      }
+      
+      if (inspiration.trim()) {
+        additionalContext += `Inspiration: ${inspiration.trim()}\n`;
+      }
+
+      // Define style-specific instructions
+      const styleInstructions = {
+        'professional': 'Write in a professional, curatorial tone suitable for gallery exhibitions and museum catalogs. Focus on artistic merit, technique, and historical significance.',
+        'technical': 'Focus on technical aspects: materials, techniques, brushwork, color theory, composition, and artistic process. Use precise terminology appropriate for art students and professionals.',
+        'poetic': 'Write in an evocative, poetic style that captures the emotional and sensory experience of the artwork. Use metaphor, imagery, and lyrical language.',
+        'philosophical': 'Explore conceptual themes, symbolism, and philosophical implications. Connect the artwork to broader ideas about existence, meaning, and human experience.',
+        'scientific': 'Analyze the artwork using scientific and analytical language. Discuss color psychology, visual perception, compositional principles, and material properties.',
+        'abstract': 'Write in an experimental, non-linear style that mirrors the abstract nature of the artwork. Use fragmented language, unconventional structure, and interpretive ambiguity.'
+      };
+
+      const styleInstruction = styleInstructions[style] || styleInstructions['professional'];
 
       // Call OpenAI Vision API
       const completion = await openai.chat.completions.create({
@@ -98,9 +163,9 @@ app.post('/api/describe', (req, res) => {
             content: [
               { 
                 type: 'text', 
-                text: `You are an art curator writing professional artwork descriptions. Based on the image and this brief description: "${shortDesc}", create a polished, detailed, and professional artwork description. Focus on the visual elements, technique, color palette, composition, and emotional impact. Keep it concise but evocative (2-3 paragraphs).` 
+                text: `You are an art curator writing professional artwork descriptions. Based on the image and the following information, create a polished, detailed, and professional artwork description.\n\nBrief Description: "${shortDesc}"\n\n${additionalContext ? 'Additional Information:\n' + additionalContext : ''}\n${styleInstruction}\n\nFocus on visual elements, technique, color palette, composition, emotional impact, and meaning. Incorporate the artist name, medium, date, context, and inspiration when provided. Write 2-3 well-structured paragraphs.` 
               },
-              { 
+              {  
                 type: 'image_url', 
                 image_url: { 
                   url: dataUrl,
