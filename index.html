@@ -510,8 +510,9 @@
 
   <script>
     // API endpoint configuration
-    // Change this to match where your backend server is running
-    const API_URL = 'http://localhost:3000/api/describe';
+    // Change to match where backend server is running
+    const API_URL = '/api/describe';
+    //const API_URL = 'http://localhost:3000/api/describe';
 
     const imageUpload = document.getElementById('imageUpload');
     const preview = document.getElementById('preview');
@@ -526,10 +527,11 @@
     // Check backend connection on load
     async function checkBackend() {
       try {
-        const response = await fetch(API_URL.replace('/api/describe', '/'), {
+        /*const response = await fetch(API_URL.replace('/api/describe', '/'), {
           method: 'GET',
           mode: 'cors'
         });
+        */
         
         serverStatus.className = 'server-status connected';
         serverStatus.innerHTML = '✓ Backend connected';
