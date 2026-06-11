@@ -26,13 +26,7 @@
       --radius: 12px;
       --radius-lg: 24px;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: linear-gradient(135deg, #f9f6f0 0%, #f9f6f0 100%);
@@ -41,30 +35,12 @@
       color: var(--text-primary);
       line-height: 1.6;
     }
-
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
+    .container { max-width: 720px; margin: 0 auto; animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(24px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
-    }
-
+    .header { text-align: center; margin-bottom: 40px; animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards; }
     .header h1 {
       font-family: 'Fraunces', serif;
       font-size: clamp(32px, 5vw, 48px);
@@ -74,13 +50,7 @@
       letter-spacing: -0.02em;
       text-shadow: 0 2px 20px rgba(0,0,0,0.2);
     }
-
-    .header p {
-      font-size: 16px;
-      color: var(--text-secondary);
-      font-weight: 400;
-    }
-
+    .header p { font-size: 16px; color: var(--text-secondary); font-weight: 400; }
     .card {
       background: rgba(249, 246, 240, 0.95);
       backdrop-filter: blur(20px);
@@ -90,31 +60,18 @@
       border: 1px solid rgba(255,255,255,0.5);
       animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
     }
-
     .server-status {
       padding: 12px 16px;
-      background: #fff3cd;
-      border: 1px solid #ffc107;
+      background: #d4edda;
+      border: 1px solid #28a745;
       border-radius: var(--radius);
       margin-bottom: 24px;
       font-size: 14px;
+      color: #155724;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-
-    .server-status.connected {
-      background: #d4edda;
-      border-color: #28a745;
-      color: #155724;
-    }
-
-    .server-status.error {
-      background: #f8d7da;
-      border-color: #dc3545;
-      color: #721c24;
-    }
-
     .upload-zone {
       position: relative;
       border: 2px dashed var(--border);
@@ -127,42 +84,12 @@
       overflow: hidden;
       margin-bottom: 24px;
     }
-
-    .upload-zone:hover {
-      border-color: var(--primary);
-      background: #f0f4ff;
-    }
-
-    .upload-zone.has-image {
-      padding: 0;
-      border: none;
-      background: transparent;
-    }
-
-    .upload-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 16px;
-      opacity: 0.4;
-    }
-
-    .upload-label {
-      display: block;
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .upload-hint {
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    #imageUpload {
-      display: none;
-    }
-
+    .upload-zone:hover { border-color: var(--primary); background: #f0f4ff; }
+    .upload-zone.has-image { padding: 0; border: none; background: transparent; }
+    .upload-icon { width: 64px; height: 64px; margin: 0 auto 16px; opacity: 0.4; }
+    .upload-label { display: block; font-size: 16px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+    .upload-hint { font-size: 14px; color: var(--text-secondary); }
+    #imageUpload { display: none; }
     #preview {
       max-width: 100%;
       max-height: 400px;
@@ -171,28 +98,10 @@
       object-fit: cover;
       animation: fadeIn 0.4s ease;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    #preview.visible {
-      display: block;
-    }
-
-    .form-group {
-      margin-bottom: 24px;
-    }
-
-    label {
-      display: block;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    #preview.visible { display: block; }
+    .form-group { margin-bottom: 24px; }
+    label { display: block; font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
     textarea {
       width: 100%;
       min-height: 120px;
@@ -206,9 +115,7 @@
       transition: all 0.2s ease;
       background: var(--surface);
     }
-
-    input[type="text"],
-    input[type="date"] {
+    input[type="text"], input[type="date"] {
       width: 100%;
       padding: 16px;
       border: 2px solid var(--border);
@@ -220,19 +127,12 @@
       background: var(--surface);
       margin-top: 8px;
     }
-
-    input:focus,
-    textarea:focus {
+    input:focus, textarea:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.1);
     }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: #9aa0a6;
-    }
-
+    input::placeholder, textarea::placeholder { color: #9aa0a6; }
     .error-message {
       display: none;
       padding: 12px 16px;
@@ -244,19 +144,12 @@
       border-left: 4px solid var(--error);
       animation: shake 0.4s ease;
     }
-
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-8px); }
       75% { transform: translateX(8px); }
     }
-
-    .error-message.visible {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
+    .error-message.visible { display: flex; align-items: center; gap: 8px; }
     .btn-primary {
       width: 100%;
       padding: 16px 24px;
@@ -276,37 +169,18 @@
       position: relative;
       overflow: hidden;
     }
-
-    .btn-primary:hover:not(:disabled) {
-      background: var(--primary-hover);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
-
-    .btn-primary:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
+    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .btn-primary:active:not(:disabled) { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-primary.loading::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
       animation: shimmer 1.5s infinite;
     }
-
-    @keyframes shimmer {
-      to { left: 100%; }
-    }
-
+    @keyframes shimmer { to { left: 100%; } }
     .result-card {
       display: none;
       margin-top: 24px;
@@ -316,86 +190,31 @@
       border-left: 4px solid var(--success);
       animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
     @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-16px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-
-    .result-card.visible {
-      display: block;
-    }
-
-    .result-card.error {
-      background: #fce8e6;
-      border-left-color: var(--error);
-    }
-
-    .result-label {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-secondary);
-      margin-bottom: 12px;
-    }
-
-    .result-text {
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--text-primary);
-      white-space: pre-wrap;
-    }
-
+    .result-card.visible { display: block; }
+    .result-card.error { background: #fce8e6; border-left-color: var(--error); }
+    .result-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 12px; }
+    .result-text { font-size: 15px; line-height: 1.7; color: var(--text-primary); white-space: pre-wrap; }
     .spinner {
       display: inline-block;
-      width: 16px;
-      height: 16px;
+      width: 16px; height: 16px;
       border: 2px solid rgba(255,255,255,0.3);
       border-top-color: white;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Responsive */
+    @keyframes spin { to { transform: rotate(360deg); } }
     @media (max-width: 640px) {
-      body {
-        padding: 16px;
-      }
-
-      .card {
-        padding: 24px;
-      }
-
-      .header h1 {
-        font-size: 32px;
-      }
-
-      .upload-zone {
-        padding: 32px 16px;
-      }
+      body { padding: 16px; }
+      .card { padding: 24px; }
+      .header h1 { font-size: 32px; }
+      .upload-zone { padding: 32px 16px; }
     }
-
-    /* Smooth scrolling */
-    html {
-      scroll-behavior: smooth;
-    }
-
-    /* Selection color */
-    ::selection {
-      background: rgba(26, 115, 232, 0.2);
-      color: var(--text-primary);
-    }
+    html { scroll-behavior: smooth; }
+    ::selection { background: rgba(26, 115, 232, 0.2); color: var(--text-primary); }
   </style>
 </head>
 
@@ -407,9 +226,7 @@
     </div>
 
     <div class="card">
-      <div class="server-status" id="serverStatus">
-        Checking backend connection...
-      </div>
+      <div class="server-status" id="serverStatus">✓ Ready</div>
 
       <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imageUpload').click()">
         <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -423,53 +240,32 @@
 
       <div class="form-group">
         <label for="shortDesc">Brief Description</label>
-        <textarea 
-          id="shortDesc" 
-          placeholder="Describe your artwork briefly... (e.g., 'Abstract painting with blue and gold tones representing ocean waves at sunset')"
-        ></textarea>
+        <textarea id="shortDesc" placeholder="Describe your artwork briefly... (e.g., 'Abstract painting with blue and gold tones representing ocean waves at sunset')"></textarea>
       </div>
 
       <div class="form-group">
         <label for="artistName">Artist Name</label>
-        <input 
-          type="text" 
-          id="artistName" 
-          placeholder="Enter the artist's name (optional)"
-        />
+        <input type="text" id="artistName" placeholder="Enter the artist's name (optional)" />
       </div>
 
       <div class="form-group">
         <label for="medium">Medium Used</label>
-        <input 
-          type="text" 
-          id="medium" 
-          placeholder="e.g., Oil on canvas, Watercolor, Digital, etc. (optional)"
-        />
+        <input type="text" id="medium" placeholder="e.g., Oil on canvas, Watercolor, Digital, etc. (optional)" />
       </div>
 
       <div class="form-group">
         <label for="dateFinished">Date Finished</label>
-        <input 
-          type="text" 
-          id="dateFinished" 
-          placeholder="e.g., 2023, Spring 2023, etc. (optional)"
-        />
+        <input type="text" id="dateFinished" placeholder="e.g., 2023, Spring 2023, etc. (optional)" />
       </div>
 
       <div class="form-group">
         <label for="context">Context</label>
-        <textarea 
-          id="context" 
-          placeholder="Describe the context or circumstances surrounding the creation of the artwork (optional)"
-        ></textarea>
+        <textarea id="context" placeholder="Describe the context or circumstances surrounding the creation of the artwork (optional)"></textarea>
       </div>
 
       <div class="form-group">
         <label for="inspiration">History or Inspiration</label>
-        <textarea 
-          id="inspiration" 
-          placeholder="Describe the history or inspiration behind the artwork (optional)"
-        ></textarea>
+        <textarea id="inspiration" placeholder="Describe the history or inspiration behind the artwork (optional)"></textarea>
       </div>
 
       <div class="error-message" id="errorMessage">
@@ -509,10 +305,7 @@
   </div>
 
   <script>
-    // API endpoint configuration
-    // Change to match where backend server is running
     const API_URL = '/api/describe';
-    //const API_URL = 'http://localhost:3000/api/describe';
 
     const imageUpload = document.getElementById('imageUpload');
     const preview = document.getElementById('preview');
@@ -522,28 +315,7 @@
     const resultCard = document.getElementById('resultCard');
     const resultText = document.getElementById('resultText');
     const submitBtn = document.getElementById('submitBtn');
-    const serverStatus = document.getElementById('serverStatus');
 
-    // Check backend connection on load
-    async function checkBackend() {
-      try {
-        /*const response = await fetch(API_URL.replace('/api/describe', '/'), {
-          method: 'GET',
-          mode: 'cors'
-        });
-        */
-        
-        serverStatus.className = 'server-status connected';
-        serverStatus.innerHTML = 'Backend connected';
-      } catch (error) {
-        serverStatus.className = 'server-status error';
-        serverStatus.innerHTML = 'Backend not running. Please start server.js on port 3000';
-      }
-    }
-
-    checkBackend();
-
-    // Image preview
     imageUpload.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
@@ -558,7 +330,6 @@
       }
     });
 
-    // Drag and drop
     uploadZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       uploadZone.style.borderColor = 'var(--primary)';
@@ -574,12 +345,10 @@
       e.preventDefault();
       uploadZone.style.borderColor = 'var(--border)';
       uploadZone.style.background = 'var(--surface-variant)';
-      
       const file = e.dataTransfer.files[0];
       if (file && file.type.startsWith('image/')) {
         imageUpload.files = e.dataTransfer.files;
-        const event = new Event('change');
-        imageUpload.dispatchEvent(event);
+        imageUpload.dispatchEvent(new Event('change'));
       }
     });
 
@@ -596,10 +365,7 @@
     function showLoading() {
       submitBtn.disabled = true;
       submitBtn.classList.add('loading');
-      submitBtn.innerHTML = `
-        <span class="spinner"></span>
-        Analyzing artwork...
-      `;
+      submitBtn.innerHTML = '<span class="spinner"></span> Analyzing artwork...';
     }
 
     function hideLoading() {
@@ -627,17 +393,14 @@
       hideError();
       resultCard.classList.remove('visible');
 
-      // Validation
       if (!shortDesc) {
         showError('Please enter a brief description of your artwork.');
         return;
       }
-
       if (!file) {
         showError('Please upload an image of your artwork.');
         return;
       }
-
       if (file.size > 4 * 1024 * 1024) {
         showError('Image size must be under 4MB. Please compress your image and try again.');
         return;
@@ -645,51 +408,50 @@
 
       showLoading();
 
-      // Prepare form data
-      const formData = new FormData();
-      formData.append('imageUpload', file);
-      formData.append('shortDesc', shortDesc);
-      formData.append('artistName', artistName);
-      formData.append('medium', medium);
-      formData.append('dateFinished', dateFinished);
-      formData.append('context', context);
-      formData.append('inspiration', inspiration);
-      formData.append('style', style);
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const imageBase64 = e.target.result;
 
-      try {
-        console.log('Sending request to:', API_URL);
-        
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          body: formData,
-          mode: 'cors'
-        });
+        try {
+          const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              imageBase64,
+              shortDesc,
+              artistName,
+              medium,
+              dateFinished,
+              context,
+              inspiration,
+              style
+            })
+          });
 
-        console.log('Response status:', response.status);
+          if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+          }
 
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
+          const data = await response.json();
+          hideLoading();
+
+          if (data.error) {
+            resultCard.classList.add('error');
+            resultCard.classList.add('visible');
+            resultText.textContent = data.error;
+          } else {
+            resultCard.classList.remove('error');
+            resultCard.classList.add('visible');
+            resultText.textContent = data.description;
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        } catch (error) {
+          console.error('Fetch error:', error);
+          hideLoading();
+          showError(`Something went wrong. Please try again. Error: ${error.message}`);
         }
-
-        const data = await response.json();
-        
-        hideLoading();
-
-        if (data.error) {
-          resultCard.classList.add('error');
-          resultCard.classList.add('visible');
-          resultText.textContent = data.error;
-        } else {
-          resultCard.classList.remove('error');
-          resultCard.classList.add('visible');
-          resultText.textContent = data.description;
-          resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      } catch (error) {
-        console.error('Fetch error:', error);
-        hideLoading();
-        showError(`Cannot connect to backend server. Make sure server.js is running on port 3000. Error: ${error.message}`);
-      }
+      };
+      reader.readAsDataURL(file);
     }
   </script>
 </body>
